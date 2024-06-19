@@ -10,8 +10,6 @@ dotenv.config();
 
 const authRoutes = require('./routes/auth');
 const pacienteRoutes = require('./routes/pacientes');
-const tiqueterasRoutes = require('./routes/tiqueteras');
-const acudienteRoutes = require('./routes/acudientes'); // Asegúrate de que esto esté correcto
 
 const app = express();
 
@@ -25,8 +23,6 @@ app.use(cors());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/pacientes', pacienteRoutes);
-app.use('/api/tiqueteras', tiqueterasRoutes);
-app.use('/api/acudientes', acudienteRoutes); // Asegúrate de que esto esté correcto
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
