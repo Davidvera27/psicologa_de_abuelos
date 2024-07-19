@@ -1,18 +1,31 @@
+// esquema  correctamente definido para manejar fechas y otros tipos de datos.
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+const diaSchema = new Schema({
+  dia: String,
+  seleccionado: Boolean
+});
+
 const pacienteSchema = new Schema({
   nombre: { type: String, required: true },
-  apellidos: { type: String },
-  fechaNacimiento: { type: Date },
+  apellidos: { type: String, required: true },
+  fechaNacimiento: { type: Date, required: true },
   lugarNacimiento: { type: String },
   documento: { type: String },
   rh: { type: String },
+  genero: { type: String },
+  imagenPerfil: { type: String },
   nivelEducativo: { type: String },
   tiquetera: { type: String },
   estadoTiquetera: { type: String },
-  fechaIngreso: { type: Date },
+  fechaIngreso: { type: Date, required: true },
   fechaVencimiento: { type: Date },
+  valorPagado: { type: Number },
+  totalPagado: { type: Number },
+  totalDiasUsados: { type: Number, default: 0 },
+  diasRestantes: { type: Number },
+  fechaTerminacion: { type: Date },
   contacto: { type: String },
   telefono2: { type: String },
   direccion: { type: String },
@@ -28,18 +41,36 @@ const pacienteSchema = new Schema({
   acudienteApellidos: { type: String },
   acudienteDocumento: { type: String },
   acudienteTelefono: { type: String },
-  acudienteTelefono2: { type: String },
-  acudienteDireccion: { type: String },
-  acudienteApartamentoInterior: { type: String },
-  acudienteTrabajoDireccion: { type: String },
-  acudienteOficina: { type: String },
+  acudienteEmail: { type: String },  // Asegúrarse de que el nombre del campo coincida con el frontend
   acudienteParentesco: { type: String },
+  motivoConsulta: { type: String },
+  antecedentesAtencionIntegral: { type: String },
+  antecedentesMedicos: { type: String },
+  diagnosticoMedicoPsicologico: { type: String },
+  antecedentesFamiliares: { type: String },
+  antecedentesTratamiento: { type: String },
+  areaComportamiento: { type: String },
+  servicioEmi: { type: String, enum: ['Sí', 'No'], default: 'No' },
   telefonoEmi: { type: String },
-  atencionDomiciliaria: { type: String },
-  diasSeleccionados: [{
-    start: { type: Date },
-    end: { type: Date }
-  }]
+  atencionDomiciliaria: { type: String, enum: ['Sí', 'No'], default: 'No' },
+  servicioTransporte: { type: String, enum: ['Sí', 'No'], default: 'No' },
+  horaRecogida: { type: String },
+  diasSeleccionados: [diaSchema],
+  observaciones: { type: String },
+  estado: { type: String, enum: ['Activo', 'Inactivo', 'Suspendido'], default: 'Activo' },
 });
+
+pacienteSchema.virtual('edad').get(function () {
+  const today = new Date();
+  const birthDate = new Date(this.fechaNacimiento);
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDifference = today.getMonth() - birthDate.getMonth();
+  if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+    age--;
+  }
+  return age;
+});
+
+pacienteSchema.set('toJSON', { virtuals: true });
 
 module.exports = mongoose.model('Paciente', pacienteSchema);
