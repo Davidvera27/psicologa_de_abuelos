@@ -5,8 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 
-// Configuración de multer
-const storage = multer.diskStorage({
+// Configuración de multer para imágenes de perfil
+const storageImages = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'uploads/');
   },
@@ -16,7 +16,21 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage });
+const uploadImages = multer({ storage: storageImages });
+
+// Configuración de multer para documentos
+const storageDocs = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads_docs/');
+  },
+  filename: (req, file, cb) => {
+    const fileExt = path.extname(file.originalname);
+    const docType = file.fieldname === 'docIdentidad' ? 'identidad' : 'historia_clinica';
+    cb(null, `${req.params.id}_${docType}${fileExt}`); // Nombre basado en el ID del paciente y tipo de documento
+  },
+});
+
+const uploadDocs = multer({ storage: storageDocs });
 
 // Crear nuevo paciente
 router.post('/', async (req, res) => {
@@ -78,8 +92,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Ruta para actualizar el paciente incluyendo la imagen
-router.put('/:id', upload.single('imagenPerfil'), async (req, res) => {
+// Ruta para actualizar el paciente incluyendo la imagen y documentos
+router.put('/:id', uploadImages.single('imagenPerfil'), async (req, res) => {
   try {
     const paciente = await Paciente.findById(req.params.id);
     if (!paciente) return res.status(404).send('Paciente no encontrado');
@@ -107,23 +121,25 @@ router.put('/:id', upload.single('imagenPerfil'), async (req, res) => {
   }
 });
 
-// Actualizar días seleccionados de un paciente
-router.put('/:id/dias/:diaId', async (req, res) => {
+// Ruta para actualizar documentos del paciente
+router.put('/:id/docs', uploadDocs.fields([{ name: 'docIdentidad' }, { name: 'historiaClinica' }]), async (req, res) => {
   try {
     const paciente = await Paciente.findById(req.params.id);
     if (!paciente) return res.status(404).send('Paciente no encontrado');
 
-    const diaIndex = paciente.diasSeleccionados.findIndex(dia => dia._id.toString() === req.params.diaId);
-    if (diaIndex === -1) return res.status(404).send('Día no encontrado');
+    if (req.files.docIdentidad) {
+      paciente.docIdentidad = req.files.docIdentidad[0].filename;
+    }
 
-    paciente.diasSeleccionados[diaIndex].start = req.body.start;
-    paciente.diasSeleccionados[diaIndex].end = req.body.end;
+    if (req.files.historiaClinica) {
+      paciente.historiaClinica = req.files.historiaClinica[0].filename;
+    }
 
-    await paciente.save();
-    res.send(paciente);
+    const updatedPaciente = await paciente.save();
+    res.json(updatedPaciente);
   } catch (error) {
-    console.error('Error al actualizar el día seleccionado:', error);
-    res.status(500).send('Error al actualizar el día seleccionado');
+    console.error('Error al actualizar los documentos del paciente:', error);
+    res.status(500).send('Error al actualizar los documentos del paciente');
   }
 });
 
