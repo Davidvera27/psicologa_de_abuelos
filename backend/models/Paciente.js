@@ -45,7 +45,7 @@ const pacienteSchema = new Schema({
   acudienteApellidos: { type: String },
   acudienteDocumento: { type: String },
   acudienteTelefono: { type: String },
-  acudienteEmail: { type: String }, // Asegúrarse de que el nombre del campo coincida con el frontend
+  acudienteEmail: { type: String },
   acudienteParentesco: { type: String },
   motivoConsulta: { type: String },
   antecedentesAtencionIntegral: { type: String },
@@ -62,6 +62,8 @@ const pacienteSchema = new Schema({
   diasSeleccionados: [diaSchema],
   observaciones: { type: String },
   estado: { type: String, enum: ['Activo', 'Inactivo', 'Suspendido'], default: 'Activo' },
+  docIdentidad: { type: String }, // Nuevo campo para documento de identidad
+  historiaClinica: { type: String } // Nuevo campo para historia clínica
 });
 
 pacienteSchema.virtual('edad').get(function () {
