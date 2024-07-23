@@ -1,9 +1,8 @@
-//frontend\src\components\Contrato2.js
-
 import React, { forwardRef, useRef, useImperativeHandle } from 'react';
 import { jsPDF } from 'jspdf';
 import SignatureCanvas from 'react-signature-canvas';
-import logo from '../assets/lofo_psico_abuelos_full_hd.jpeg';
+import logo from '../assets/logo_psico_abuelos_full_hd.jpeg';
+import membrete from '../assets/membrete.png'; // Añade el membrete aquí
 
 const Contrato2 = forwardRef((props, ref) => {
   const { paciente } = props;
@@ -25,6 +24,7 @@ const Contrato2 = forwardRef((props, ref) => {
     generatePDF() {
       const pdf = new jsPDF('p', 'pt', 'a4');
       const pageHeight = pdf.internal.pageSize.getHeight();
+      const pageWidth = pdf.internal.pageSize.getWidth();
       const margin = 20;
       let yPosition = margin;
 
@@ -34,17 +34,20 @@ const Contrato2 = forwardRef((props, ref) => {
           if (yPosition >= pageHeight - margin) {
             pdf.addPage();
             yPosition = margin;
+            // Añadir la marca de agua en cada página nueva
+            pdf.addImage(membrete, 'PNG', 0, 0, pageWidth, pageHeight);
           }
           pdf.text(lines[i], x, yPosition);
           yPosition += options.lineHeight || 12;
         }
       };
 
-      // Add logo
+      // Añadir la marca de agua
+      pdf.addImage(membrete, 'PNG', 0, 0, pageWidth, pageHeight);
+
+      // Añadir el logo
       pdf.addImage(logo, 'JPEG', margin, yPosition, 60, 60);
       yPosition += 80;
-
-
 
       pdf.setFontSize(14);
       pdf.text('TÉRMINOS Y CONDICIONES CENTRO DE DÍA', pdf.internal.pageSize.getWidth() / 2, yPosition, null, null, 'center');
@@ -83,12 +86,14 @@ const Contrato2 = forwardRef((props, ref) => {
         yPosition += 14;
       });
 
-      // Add signatures
+      // Añadir firmas
       if (sigCanvasPacienteRef.current && !sigCanvasPacienteRef.current.isEmpty()) {
         const signatureImgData = sigCanvasPacienteRef.current.toDataURL('image/png');
         if (yPosition + 50 >= pageHeight - margin) {
           pdf.addPage();
           yPosition = margin;
+          // Añadir la marca de agua en cada página nueva
+          pdf.addImage(membrete, 'PNG', 0, 0, pageWidth, pageHeight);
         }
         pdf.addImage(signatureImgData, 'PNG', 150, yPosition, 200, 50);
         yPosition += 60;
@@ -99,6 +104,8 @@ const Contrato2 = forwardRef((props, ref) => {
         if (yPosition + 50 >= pageHeight - margin) {
           pdf.addPage();
           yPosition = margin;
+          // Añadir la marca de agua en cada página nueva
+          pdf.addImage(membrete, 'PNG', 0, 0, pageWidth, pageHeight);
         }
         pdf.addImage(signatureImgData, 'PNG', 400, yPosition, 200, 50);
         yPosition += 60;
@@ -121,7 +128,6 @@ const Contrato2 = forwardRef((props, ref) => {
       <div id="contrato2" style={{ padding: '40px', backgroundColor: 'white', color: 'black', fontFamily: 'Arial, sans-serif', lineHeight: 1.5 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
           <img src={logo} alt="Logo" style={{ height: '60px' }} />
-
         </div>
         <h1 style={{ textAlign: 'center', textDecoration: 'underline', marginBottom: '20px' }}>TÉRMINOS Y CONDICIONES CENTRO DE DÍA</h1>
         <div style={{ marginBottom: '20px' }}>
