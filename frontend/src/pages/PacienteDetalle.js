@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { Box, TextField, Grid, Paper, Typography, Button, IconButton, Modal, Avatar, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Box, TextField, Grid, Paper, Typography, Button, IconButton, Modal, Avatar, Accordion, AccordionSummary, AccordionDetails, FormControlLabel, Checkbox } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { ThemeProvider } from '@mui/material/styles';
 import { FaEye, FaFilePdf } from 'react-icons/fa';
@@ -14,7 +14,9 @@ const PacienteDetalle = () => {
   const [paciente, setPaciente] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
-  const [imagenPerfil, setImagenPerfil] = useState(null); // Para manejar la imagen del perfil
+  const [imagenPerfil, setImagenPerfil] = useState(null);
+  const [docIdentidad, setDocIdentidad] = useState(null);
+  const [historiaClinica, setHistoriaClinica] = useState(null);
   const [showContrato1, setShowContrato1] = useState(false);
   const [showContrato2, setShowContrato2] = useState(false);
   const contratoRef = useRef();
@@ -46,6 +48,24 @@ const PacienteDetalle = () => {
     setImagenPerfil(e.target.files[0]);
   };
 
+  const handleDocChange = (e) => {
+    const { name, files } = e.target;
+    if (name === 'docIdentidad') {
+      setDocIdentidad(files[0]);
+    } else if (name === 'historiaClinica') {
+      setHistoriaClinica(files[0]);
+    }
+  };
+
+  const handleMedicamentoChange = (index) => (e) => {
+    const newMedicamentos = [...formData.medicamentos];
+    newMedicamentos[index].checked = e.target.checked;
+    setFormData({
+      ...formData,
+      medicamentos: newMedicamentos,
+    });
+  };
+
   const handleSave = async () => {
     const formDataToSend = new FormData();
     for (const key in formData) {
@@ -65,6 +85,22 @@ const PacienteDetalle = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+
+      const docsData = new FormData();
+      if (docIdentidad) {
+        docsData.append('docIdentidad', docIdentidad);
+      }
+      if (historiaClinica) {
+        docsData.append('historiaClinica', historiaClinica);
+      }
+      if (docIdentidad || historiaClinica) {
+        await axios.put(`http://localhost:5000/api/pacientes/${id}/docs`, docsData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      }
+
       alert('Paciente actualizado con éxito');
       setIsEditing(false);
     } catch (err) {
@@ -110,7 +146,16 @@ const PacienteDetalle = () => {
           </IconButton>
 
           {isEditing && (
-            <input type="file" accept="image/*" onChange={handleFileChange} />
+            <>
+              <Typography variant="subtitle1">Subir Imagen de Perfil</Typography>
+              <input type="file" accept="image/*" onChange={handleFileChange} />
+
+              <Typography variant="subtitle1">Subir Documento de Identidad</Typography>
+              <input type="file" name="docIdentidad" accept=".pdf, image/*" onChange={handleDocChange} />
+
+              <Typography variant="subtitle1">Subir Historia Clínica</Typography>
+              <input type="file" name="historiaClinica" accept=".pdf, image/*" onChange={handleDocChange} />
+            </>
           )}
 
           <Accordion>
@@ -191,6 +236,26 @@ const PacienteDetalle = () => {
                     InputProps={{ readOnly: !isEditing }}
                   />
                 </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Género"
+                    name="genero"
+                    value={formData.genero || ''}
+                    onChange={handleInputChange}
+                    InputProps={{ readOnly: !isEditing }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Estado Civil"
+                    name="estadoCivil"
+                    value={formData.estadoCivil || ''}
+                    onChange={handleInputChange}
+                    InputProps={{ readOnly: !isEditing }}
+                  />
+                </Grid>
               </Grid>
             </AccordionDetails>
           </Accordion>
@@ -240,6 +305,58 @@ const PacienteDetalle = () => {
                     name="fechaVencimiento"
                     type="date"
                     value={formData.fechaVencimiento ? formData.fechaVencimiento.substring(0, 10) : ''}
+                    onChange={handleInputChange}
+                    InputProps={{ readOnly: !isEditing }}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Valor Pagado"
+                    name="valorPagado"
+                    value={formData.valorPagado || ''}
+                    onChange={handleInputChange}
+                    InputProps={{ readOnly: !isEditing }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Total Pagado"
+                    name="totalPagado"
+                    value={formData.totalPagado || ''}
+                    onChange={handleInputChange}
+                    InputProps={{ readOnly: !isEditing }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Total Días Usados"
+                    name="totalDiasUsados"
+                    value={formData.totalDiasUsados || ''}
+                    onChange={handleInputChange}
+                    InputProps={{ readOnly: !isEditing }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Días Restantes"
+                    name="diasRestantes"
+                    value={formData.diasRestantes || ''}
+                    onChange={handleInputChange}
+                    InputProps={{ readOnly: !isEditing }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Fecha de Terminación"
+                    name="fechaTerminacion"
+                    type="date"
+                    value={formData.fechaTerminacion ? formData.fechaTerminacion.substring(0, 10) : ''}
                     onChange={handleInputChange}
                     InputProps={{ readOnly: !isEditing }}
                     InputLabelProps={{ shrink: true }}
@@ -305,6 +422,26 @@ const PacienteDetalle = () => {
                     InputProps={{ readOnly: !isEditing }}
                   />
                 </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Servicio de Transporte"
+                    name="servicioTransporte"
+                    value={formData.servicioTransporte || 'No'}
+                    onChange={handleInputChange}
+                    InputProps={{ readOnly: !isEditing }}
+                  />
+                  {formData.servicioTransporte === 'Sí' && (
+                    <TextField
+                      fullWidth
+                      label="Hora de Recogida"
+                      name="horaRecogida"
+                      value={formData.horaRecogida || ''}
+                      onChange={handleInputChange}
+                      InputProps={{ readOnly: !isEditing }}
+                    />
+                  )}
+                </Grid>
               </Grid>
             </AccordionDetails>
           </Accordion>
@@ -328,16 +465,6 @@ const PacienteDetalle = () => {
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
-                    label="Estado Civil"
-                    name="estadoCivil"
-                    value={formData.estadoCivil || ''}
-                    onChange={handleInputChange}
-                    InputProps={{ readOnly: !isEditing }}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <TextField
-                    fullWidth
                     label="EPS o Sisbén"
                     name="epsSisen"
                     value={formData.epsSisen || ''}
@@ -350,11 +477,11 @@ const PacienteDetalle = () => {
                     fullWidth
                     label="Servicio Emi"
                     name="servicioEmi"
-                    value={formData.servicioEmi ? 'Sí' : 'No'}
+                    value={formData.servicioEmi || 'No'}
                     onChange={handleInputChange}
                     InputProps={{ readOnly: !isEditing }}
                   />
-                  {formData.servicioEmi && (
+                  {formData.servicioEmi === 'Sí' && (
                     <TextField
                       fullWidth
                       name="telefonoEmi"
@@ -370,12 +497,31 @@ const PacienteDetalle = () => {
                     fullWidth
                     label="Atención Domiciliaria"
                     name="atencionDomiciliaria"
-                    value={formData.atencionDomiciliaria ? 'Sí' : 'No'}
+                    value={formData.atencionDomiciliaria || 'No'}
                     onChange={handleInputChange}
                     InputProps={{ readOnly: !isEditing }}
                   />
                 </Grid>
-                {/* Nueva Información Clínica */}
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Alimentación"
+                    name="alimentacion"
+                    value={formData.alimentacion || ''}
+                    onChange={handleInputChange}
+                    InputProps={{ readOnly: !isEditing }}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <TextField
+                    fullWidth
+                    label="Restricciones"
+                    name="restricciones"
+                    value={formData.restricciones || ''}
+                    onChange={handleInputChange}
+                    InputProps={{ readOnly: !isEditing }}
+                  />
+                </Grid>
                 <Grid item xs={6}>
                   <TextField
                     fullWidth
@@ -445,6 +591,23 @@ const PacienteDetalle = () => {
                     onChange={handleInputChange}
                     InputProps={{ readOnly: !isEditing }}
                   />
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="h6">Medicamentos</Typography>
+                  {formData.medicamentos && formData.medicamentos.map((medicamento, index) => (
+                    <FormControlLabel
+                      key={index}
+                      control={
+                        <Checkbox
+                          checked={medicamento.checked}
+                          onChange={handleMedicamentoChange(index)}
+                          name={medicamento.name}
+                          color="primary"
+                        />
+                      }
+                      label={medicamento.name}
+                    />
+                  ))}
                 </Grid>
               </Grid>
             </AccordionDetails>
