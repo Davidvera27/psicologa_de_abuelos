@@ -70,7 +70,7 @@ const AddPaciente = () => {
     acudienteApellidos: '',
     acudienteDocumento: '',
     acudienteTelefono: '',
-    EmailAcudiente: '',
+    acudienteEmail: '',
     acudienteParentesco: '',
     diasSeleccionados: [],
     servicioEmi: 'No',
@@ -287,7 +287,7 @@ const AddPaciente = () => {
         acudienteApellidos: '',
         acudienteDocumento: '',
         acudienteTelefono: '',
-        EmailAcudiente: '',
+        acudienteEmail: '',
         acudienteParentesco: '',
         diasSeleccionados: [],
         servicioEmi: 'No',
@@ -508,7 +508,7 @@ const AddPaciente = () => {
                                   <TextField fullWidth label="Contacto" name="acudienteTelefono" value={formData.acudienteTelefono} onChange={handleChange} />
                                 </Grid>
                                 <Grid item xs={12}>
-                                  <TextField fullWidth label="Correo electrónico" name="EmailAcudiente" value={formData.EmailAcudiente} onChange={handleChange} />
+                                  <TextField fullWidth label="Correo electrónico" name="acudienteEmail" value={formData.acudienteEmail} onChange={handleChange} />
                                 </Grid>
                               </Grid>
                             </AccordionDetails>
