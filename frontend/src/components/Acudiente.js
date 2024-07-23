@@ -54,9 +54,9 @@ const Acudiente = ({ formData, handleChange }) => {
         <TextField
           fullWidth
           required
-          name="EmailAcudiente"
+          name="acudienteEmail"
           label="Correo electrónico"
-          value={formData.EmailAcudiente || ''}
+          value={formData.acudienteEmail || ''}
           onChange={handleChange}
           helperText="Ej: acudiente_paciente@correo.com"
         />
