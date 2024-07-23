@@ -1,7 +1,7 @@
 // Home.js
-import React from 'react';
-import styled from 'styled-components';
-import fondo from '../assets/lofo_psico_abuelos_full_hd.jpeg'; // Asegúrate de que la ruta sea correcta
+import React from "react";
+import styled from "styled-components";
+import fondo from "../assets/logo_psico_abuelos_full_hd.jpeg"; // Asegúrate de que la ruta sea correcta
 
 const HomeWrapper = styled.div`
   height: 100vh;
@@ -19,9 +19,7 @@ const HomeWrapper = styled.div`
 function Home() {
   return (
     <HomeWrapper>
-      <div>
-        
-      </div>
+      <div></div>
     </HomeWrapper>
   );
 }
