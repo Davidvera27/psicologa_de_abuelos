@@ -1,4 +1,3 @@
-// esquema  correctamente definido para manejar fechas y otros tipos de datos.
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -34,14 +33,19 @@ const pacienteSchema = new Schema({
   diagnostico: { type: String },
   estadoCivil: { type: String },
   epsSisen: { type: String },
-  medicamentos: { type: [String] },
+  medicamentos: [
+    {
+      name: { type: String },
+      checked: { type: Boolean }
+    }
+  ],
   alimentacion: { type: String },
   restricciones: { type: String },
   acudienteNombre: { type: String },
   acudienteApellidos: { type: String },
   acudienteDocumento: { type: String },
   acudienteTelefono: { type: String },
-  acudienteEmail: { type: String },  // Asegúrarse de que el nombre del campo coincida con el frontend
+  acudienteEmail: { type: String }, // Asegúrarse de que el nombre del campo coincida con el frontend
   acudienteParentesco: { type: String },
   motivoConsulta: { type: String },
   antecedentesAtencionIntegral: { type: String },

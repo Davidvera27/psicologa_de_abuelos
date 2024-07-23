@@ -37,9 +37,10 @@ router.post('/', async (req, res) => {
       servicioTransporte: servicioTransporte === 'Sí' ? 'Sí' : 'No',
       horaRecogida: servicioTransporte === 'Sí' ? horaRecogida : 'N/A',
       diasSeleccionados: parsedDiasSeleccionados,
-      fechaVencimiento: fechaVencimiento,
+      fechaIngreso: fechaIngreso.toISOString(),
+      fechaVencimiento: fechaVencimiento.toISOString(),
       diasRestantes: parsedDiasSeleccionados.length,
-      fechaTerminacion: fechaVencimiento
+      fechaTerminacion: fechaVencimiento.toISOString()
     });
 
     await newPaciente.save();
@@ -87,6 +88,8 @@ router.put('/:id', upload.single('imagenPerfil'), async (req, res) => {
     Object.keys(req.body).forEach(key => {
       if (key === 'diasSeleccionados') {
         paciente[key] = JSON.parse(req.body[key]); // Parsear los días seleccionados
+      } else if (key === 'medicamentos') {
+        paciente[key] = JSON.parse(req.body[key]); // Parsear los medicamentos
       } else {
         paciente[key] = req.body[key];
       }
