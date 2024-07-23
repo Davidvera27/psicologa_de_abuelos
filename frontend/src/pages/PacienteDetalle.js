@@ -149,12 +149,37 @@ const PacienteDetalle = () => {
             <>
               <Typography variant="subtitle1">Subir Imagen de Perfil</Typography>
               <input type="file" accept="image/*" onChange={handleFileChange} />
-
+              {imagenPerfil && (
+                <img
+                  src={URL.createObjectURL(imagenPerfil)}
+                  alt="Imagen de Perfil"
+                  style={{ width: '50px', height: '50px', marginLeft: '10px' }}
+                />
+              )}
+              
               <Typography variant="subtitle1">Subir Documento de Identidad</Typography>
               <input type="file" name="docIdentidad" accept=".pdf, image/*" onChange={handleDocChange} />
+              {docIdentidad && (
+                <IconButton
+                  color="primary"
+                  onClick={() => window.open(URL.createObjectURL(docIdentidad))}
+                  sx={{ marginLeft: '10px' }}
+                >
+                  <FaEye />
+                </IconButton>
+              )}
 
               <Typography variant="subtitle1">Subir Historia Clínica</Typography>
               <input type="file" name="historiaClinica" accept=".pdf, image/*" onChange={handleDocChange} />
+              {historiaClinica && (
+                <IconButton
+                  color="primary"
+                  onClick={() => window.open(URL.createObjectURL(historiaClinica))}
+                  sx={{ marginLeft: '10px' }}
+                >
+                  <FaEye />
+                </IconButton>
+              )}
             </>
           )}
 
