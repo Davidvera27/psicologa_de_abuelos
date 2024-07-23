@@ -1,9 +1,8 @@
-//frontend\src\components\Contrato1.js
-
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import { jsPDF } from 'jspdf';
 import SignatureCanvas from 'react-signature-canvas';
-import logo from '../assets/lofo_psico_abuelos_full_hd.jpeg';
+import logo from '../assets/logo_psico_abuelos_full_hd.jpeg'; // Asegúrate de que el nombre del archivo sea correcto
+import membrete from '../assets/membrete.png'; // Añade el membrete aquí
 
 const Contrato1 = forwardRef((props, ref) => {
   const { paciente } = props;
@@ -21,6 +20,7 @@ const Contrato1 = forwardRef((props, ref) => {
     generatePDF() {
       const pdf = new jsPDF('p', 'pt', 'a4');
       const pageHeight = pdf.internal.pageSize.getHeight();
+      const pageWidth = pdf.internal.pageSize.getWidth();
       const margin = 20;
       let yPosition = margin;
 
@@ -30,11 +30,16 @@ const Contrato1 = forwardRef((props, ref) => {
           if (yPosition >= pageHeight - margin) {
             pdf.addPage();
             yPosition = margin;
+            // Añadir la marca de agua en cada página nueva
+            pdf.addImage(membrete, 'PNG', 0, 0, pageWidth, pageHeight);
           }
           pdf.text(lines[i], x, yPosition);
           yPosition += options.lineHeight || 12;
         }
       };
+
+      // Añadir la marca de agua
+      pdf.addImage(membrete, 'PNG', 0, 0, pageWidth, pageHeight);
 
       // Add logo
       pdf.addImage(logo, 'JPEG', margin, yPosition, 60, 60);
@@ -84,6 +89,8 @@ const Contrato1 = forwardRef((props, ref) => {
         if (yPosition + 50 >= pageHeight - margin) {
           pdf.addPage();
           yPosition = margin;
+          // Añadir la marca de agua en cada página nueva
+          pdf.addImage(membrete, 'PNG', 0, 0, pageWidth, pageHeight);
         }
         pdf.addImage(signatureImgData, 'PNG', 150, yPosition, 200, 50);
         yPosition += 60;
