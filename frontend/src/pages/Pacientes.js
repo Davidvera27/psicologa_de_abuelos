@@ -207,7 +207,7 @@ const Pacientes = () => {
       acudienteApellidos: selectedPaciente ? selectedPaciente.acudienteApellidos : '',
       acudienteDocumento: selectedPaciente ? selectedPaciente.acudienteDocumento : '',
       acudienteTelefono: selectedPaciente ? selectedPaciente.acudienteTelefono : '',
-      EmailAcudiente: selectedPaciente ? selectedPaciente.EmailAcudiente : '',
+      acudienteEmail: selectedPaciente ? selectedPaciente.acudienteEmail : '',
       acudienteApartamentoInterior: selectedPaciente ? selectedPaciente.acudienteApartamentoInterior : '',
       acudienteTrabajoDireccion: selectedPaciente ? selectedPaciente.acudienteTrabajoDireccion : '',
       acudienteOficina: selectedPaciente ? selectedPaciente.acudienteOficina : '',
@@ -239,7 +239,7 @@ const Pacientes = () => {
       acudienteApellidos: Yup.string(),
       acudienteDocumento: Yup.string(),
       acudienteTelefono: Yup.string(),
-      EmailAcudiente: Yup.string(),
+      acudienteEmail: Yup.string(),
       acudienteApartamentoInterior: Yup.string(),
       acudienteTrabajoDireccion: Yup.string(),
       acudienteOficina: Yup.string(),
@@ -721,12 +721,12 @@ const Pacientes = () => {
                       <StyledTextField
                         fullWidth
                         label="Teléfono 2 del Acudiente"
-                        name="EmailAcudiente"
-                        value={formik.values.EmailAcudiente}
+                        name="acudienteEmail"
+                        value={formik.values.acudienteEmail}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        error={formik.touched.EmailAcudiente && Boolean(formik.errors.EmailAcudiente)}
-                        helperText={formik.touched.EmailAcudiente && formik.errors.EmailAcudiente}
+                        error={formik.touched.acudienteEmail && Boolean(formik.errors.acudienteEmail)}
+                        helperText={formik.touched.acudienteEmail && formik.errors.acudienteEmail}
                         InputProps={{ readOnly: !isEditing }}
                       />
                     </Tooltip>
